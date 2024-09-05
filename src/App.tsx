@@ -1,33 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import createContextStore from "./helper/createContextStore.helper"
+import useDispatch from "./hooks/useDispatch.hook"
+import useSelector from "./hooks/useSelector.hook"
+
+const { Provider, actions, context } = createContextStore({
+  test: 0
+},
+  {
+    setState: (store, payload: number) => {
+      store.test = payload
+    }
+  }
+)
+
+const ComponentTest = () => {
+  const res = useSelector(context, (store) => store.test)
+  const dispatch = useDispatch(context, actions.setState)
+
+  return (
+    <div>
+      <button onClick={() => dispatch((prev) => prev.test + 1)}>Count</button>
+      selector : {res}
+    </div>
+  )
+}
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Provider>
+        <ComponentTest />
+      </Provider>
     </>
   )
 }
