@@ -2,6 +2,7 @@ import { ContextStore } from "@react-observer-context/context/Observer.context";
 import { ObserverCallback } from "@react-observer-context/utils/observer.utils";
 import { Context, useContext, useEffect, useState } from "react";
 
+
 const useSelector = <T, ReturnCallback>(context: Context<ContextStore<T>>, selector: ObserverCallback<T, ReturnCallback>) => {
 
     const value = useContext(context)

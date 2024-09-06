@@ -9,7 +9,7 @@ const createDynamicContext = <T,>(contextValue: T) => {
     })
 }
 
-type ActionCallback<T = any, U = any> = (store: T, payload: U) => void
+type ActionCallback<T , U> = (store: T, payload: U) => void
 
 type Actions<T, U> = {
     [K in keyof U]: ActionCallback<T, U[K]>
