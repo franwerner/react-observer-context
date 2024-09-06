@@ -1,0 +1,6 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./ts/tsconfig.monorepo.json" },
+  ]
+}
