@@ -1,25 +1,42 @@
 import createContextStore from "./helper/createContextStore.helper"
-import useDispatch from "./hooks/useDispatch.hook"
-import useSelector from "./hooks/useSelector.hook"
 
-const { Provider, actions, context } = createContextStore({
-  test: 0
+
+const { Provider, useDispatch, useSelector } = createContextStore({
+  test: {
+    color: {},
+    a: 1
+  },
+  hola: {
+    f: 0
+  }
 },
   {
-    setState: (store, payload: number) => {
-      store.test = payload
+    test: {
+      setState: (state, payload: string) => {
+        state.color = payload
+      },
+
+      setState32: (store, payload: number) => {
+        store.a = payload
+      }
+    },
+    hola: {
+      setState3: (store, payload: number) => {
+        store.f = payload
+      }
     }
   }
 )
 
+
 const ComponentTest = () => {
-  const res = useSelector(context, (store) => store.test)
-  const dispatch = useDispatch(context, actions.setState)
+
+  const res = useSelector((prev) => prev.test.a)
+  const dispatch = useDispatch({ state: "test", action: "setState32" })
 
   return (
     <div>
-      <button onClick={() => dispatch((prev) => prev.test + 1)}>Count</button>
-      selector : {res}
+      <button onClick={() => dispatch((prev) => prev.a + 1)}>Count{res}</button>
     </div>
   )
 }

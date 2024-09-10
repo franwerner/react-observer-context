@@ -1,7 +1,7 @@
 import { Context, ReactNode, useMemo, useRef } from "react";
-import observer, { Listeners, ObserverManager } from "../utils/observer.utils";
+import observerManager, { Listeners, ObserverManager } from "../utils/observer.utils";
 
-type ContextStore<T> = { observer: ObserverManager } & { store: T }
+type ContextStore<T> = { observer: ObserverManager<T> } & { store: T }
 
 interface ObserverProps<T> {
     children: ReactNode
@@ -18,7 +18,7 @@ const Observer = <T,>({ children, context, value}: ObserverProps<T>) => {
 
     const providerValue = useMemo(() => ({
         store: ref.current.store,
-        observer: observer(ref.current.listeners, ref.current.store)
+        observer: observerManager(ref.current.listeners, ref.current.store)
     }), [])
 
     return (

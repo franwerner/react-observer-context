@@ -1,14 +1,14 @@
-type ObserverCallback<T = any,R = any> = (store: T) => R
+type ObserverCallback<T = any, R = any> = (store: T) => R
 type Listeners = Set<ObserverCallback>
 
-interface ObserverManager {
-    subscribe: (cb: (store:any) => void) => void
-    unsubscribe: (cb: (store:any) => void) => void
+interface ObserverManager<T> {
+    subscribe: (cb: (store: T) => void) => void
+    unsubscribe: (cb: (store: T) => void) => void
     notify: () => void,
     listeners: Listeners
 }
 
-const observerManager = <T,>(listeners: Listeners, store: T): ObserverManager => ({
+const observerManager = <T,>(listeners: Listeners, store: T): ObserverManager<T> => ({
     subscribe: (cb) => {
         listeners.add(cb)
     },
