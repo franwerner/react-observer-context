@@ -4,20 +4,16 @@ import { Context, useContext } from "react";
 
 const isFunction = (input: any): input is Function => typeof input === "function"
 
-
-const useDispatch = <T, R, K extends keyof T>(
+const useDispatch = <T, R>(
     context: Context<ContextStore<T>>,
-    {
-        state,
-        action
-    }: { state: K, action: ActionCallback<T[K], R> }
+    action : ActionCallback<T,R>
 ) => {
 
     const value = useContext(context)
 
-    return (payload: ((store: T[K]) => R) | R) => {
-        const res = isFunction(payload) ? payload(value.store[state]) : payload
-        action(value.store[state], res)
+    return (payload: ((store: T) => R) | R) => {
+        const res = isFunction(payload) ? payload(value.store) : payload
+        action(value.store, res)
         value.observer.notify()
     }
 

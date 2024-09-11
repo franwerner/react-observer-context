@@ -5,14 +5,14 @@ type ContextStore<T> = { observer: ObserverManager<T> } & { store: T }
 
 interface ObserverProps<T> {
     children: ReactNode
-    value: T
+    store: T
     context: Context<ContextStore<T>>
 }
 
-const Observer = <T,>({ children, context, value}: ObserverProps<T>) => {
+const Observer = <T,>({ children, context, store}: ObserverProps<T>) => {
 
     const ref = useRef<{ store: T, listeners: Listeners }>({
-        store: value,
+        store: store,
         listeners: new Set()
     })
 

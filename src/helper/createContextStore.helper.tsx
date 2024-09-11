@@ -11,57 +11,42 @@ const createDynamicContext = <T,>(store: T) => {
     })
 }
 
-type CommonObject<T> = { [K in keyof T]: any }
-
 type ActionCallback<T, U> = (state: T, payload: U) => void
 
-type ActionGroup<T, U> = {
-    [K in keyof U]: ActionCallback<T, U[K]>
-
-}
 type Actions<T, U> = {
-    [K in keyof U]: ActionGroup<T[K extends keyof T ? K : never], U[K]>
+    [K in keyof U]: ActionCallback<T, U[K]>
 }
-
-type dispatchKeys<U, K2> = keyof U[K2 extends keyof U ? K2 : never]
-
 type ReturnTypeContextStore<T, U> = {
     Provider: (props: { children: ReactNode }) => JSX.Element;
-    useDispatch: <K extends dispatchKeys<U, K2>, K2 extends keyof T>(
-        { state, action }: { state: K2; action: K }
-    ) => (payload: U[K2 extends keyof U ? K2 : never][K] | ((store: T[K2]) => U[K2 extends keyof U ? K2 : never][K])) => void;
+    useDispatch: <K extends keyof U>(actionKey: K) => (payload: U[K] | ((store: T) => U[K])) => void;
     useSelector: <B>(cb: ObserverCallback<T, B>) => B | undefined;
-    extendStore: <EX extends CommonObject<EX>, EX2 extends CommonObject<EX>>(
-        cb: (store: T, actions: Actions<T, U>) => { extend_actions: Actions<EX, EX2>; extend_store: EX }
-    ) => ReturnTypeContextStore<EX, EX2>;
-    store : T
+    store: T
 };
 
-const createContextStore = <
-    T extends CommonObject<T>,
-    U extends CommonObject<T>
->(store: T, actions: Actions<T, U>) => {
+interface ConfigStore<T, U> {
+    store: T,
+    actions: Actions<T, U>
+}
+
+const createContextStore = <T, U>(config: ConfigStore<T, U>) => {
+    const { actions, store } = config
     const immutableStore = structuredClone(store);
     const context = createDynamicContext(store);
 
     const inmmutableActions = Object.assign({}, actions)
+
     const res: ReturnTypeContextStore<T, U> = {
-        Provider: (props) => <Provider {...props} context={context} value={immutableStore} />,
-        useDispatch: ({ action, state }) => {
-            return useDispatch(context, { state, action: inmmutableActions[state as keyof T][action] })
+        Provider: (props) => <Provider {...props} context={context} store={immutableStore} />,
+        useDispatch: (actionKey) => {
+            const currentAction = inmmutableActions[actionKey]
+            return useDispatch(context, currentAction)
         },
         useSelector: <B,>(cb: ObserverCallback<T, B>) => useSelector(context, cb),
-        extendStore: <EX extends CommonObject<EX>, EX2 extends CommonObject<EX>>(
-            cb: (store: T, actions: Actions<T, U>) => { extend_actions: Actions<EX, EX2>; extend_store: EX }
-        ): ReturnTypeContextStore<EX, EX2> => {
-            const { extend_actions, extend_store } = cb(store, actions);
-            return createContextStore(extend_store, extend_actions);
-        },
-        store : immutableStore
+        store: immutableStore
     };
     return res
 };
 
-export type { ActionCallback, ActionGroup, Actions };
+export type { ActionCallback, Actions };
 export default createContextStore
 
