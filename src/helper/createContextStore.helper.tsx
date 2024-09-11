@@ -30,19 +30,16 @@ interface ConfigStore<T, U> {
 
 const createContextStore = <T, U>(config: ConfigStore<T, U>) => {
     const { actions, store } = config
-    const immutableStore = structuredClone(store);
     const context = createDynamicContext(store);
 
-    const inmmutableActions = Object.assign({}, actions)
-
     const res: ReturnTypeContextStore<T, U> = {
-        Provider: (props) => <Provider {...props} context={context} store={immutableStore} />,
+        Provider: (props) => <Provider {...props} context={context} store={store} />,
         useDispatch: (actionKey) => {
-            const currentAction = inmmutableActions[actionKey]
+            const currentAction = actions[actionKey]
             return useDispatch(context, currentAction)
         },
         useSelector: <B,>(cb: ObserverCallback<T, B>) => useSelector(context, cb),
-        store: immutableStore
+        store: store
     };
     return res
 };

@@ -1,18 +1,38 @@
- 
- type ActionCallback<T, U> = (state: T, payload: U) => void
 
- type Actions<T, U> = {
-     [K in keyof U]: ActionCallback<T, U[K]>
- }
+type ActionCallbackInput<T, U> = (state: T, payload: U) => void
 
-interface Reducer<T extends object,U> {
-    state : T,
-    actions : Actions<T,U>,
+type ActionsInput<T, U> = {
+    [K in keyof U]: ActionCallbackInput<T, U[K]>
 }
 
- const createReducer = <T extends object,U>(config:Reducer<T,U>) => {
-   return config
-};
+interface ReducerInput<T extends object, U> {
+    state: T,
+    actions: ActionsInput<T, U>,
+}
 
-export type {Reducer}
+type Actions<U> = {
+    [K in keyof U]: (payload: U[K]) => void
+}
+
+interface Reducer<T, U> {
+    state: T,
+    actions: Actions<U>
+}
+
+const createReducer = <T extends object, U>(config: ReducerInput<T, U>): Reducer<T, U> => {
+
+    const actionsWithState: Actions<U> = {} as Actions<U>
+    for (const key in config.actions) {
+        actionsWithState[key] = ((payload) => {
+            const action = config.actions[key]
+            action(config.state, payload);
+        })
+    }
+    return {
+        state: config.state,
+        actions: actionsWithState
+    }
+}
+
+export type { Reducer }
 export default createReducer

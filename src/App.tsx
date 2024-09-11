@@ -5,14 +5,16 @@ import createReducer, { Reducer } from "./helper/createReducer.helper"
 *Creo un symbol que se le va a 
 * 
  */
+
+
 const f = createReducer({
   actions: {
     setR: (state, payload: string) => {
-      state.test = payload
+      state.test.push()
     }
   },
   state: {
-    test: "hola"
+    test: []
   }
 })
 const g = createReducer({
@@ -26,35 +28,41 @@ const g = createReducer({
   }
 })
 
+
 type ReducerList<T extends { [key: string]: Reducer<any, any> }> = {
-  [Key in keyof T]: T[Key]
+  [K in keyof T]: T[K]
 };
 
 
 const index = <T extends { [key: string]: Reducer<any, any> },>(reducers: ReducerList<T>) => {
 
-  type KeyActions = {[K in keyof T]: keyof T[K]['actions']}[keyof T]
-  type keyCallback = {[K in keyof T]: T[K]['actions'][keyof T[K]['actions'] ]  }[keyof T]
-  let stackActions = {} as Record<KeyActions, keyCallback> 
+  type KeyActions = { [K in keyof T]: keyof T[K]['actions'] }[keyof T]
+
+  type keyCallback = { [K in keyof T]: {
+    [K2 in keyof T[K]['actions']] : (payload:Parameters<T[K]['actions'][K2]>) => void
+  }[keyof T[K]["actions"]] 
+}[keyof T]
+  
+  let stackActions = {}
   let stackStates = {} as { [K in keyof T]: T[K]['state'] }
-  let stores = new Set()
   for (const key in reducers) {
     const reducer = reducers[key]
     if (reducer) {
       const state = reducer["state"]
       const actions = reducer["actions"]
       for (const key in actions) {
-          const action = actions[key]
-          if(action){
-            stackActions[key as keyof typeof stackActions] = action
-          }
+        const action = actions[key]
+        if (action) {
+          (stackActions as any)[key] = action
+        }
       }
       stackStates[key] = state
     }
 
   }
-  return stackActions
+  return stackActions as Record<KeyActions, keyCallback>
 }
+
 
 const t = index({
   g,
@@ -80,7 +88,7 @@ const { Provider, useDispatch, useSelector, store } = createContextStore({
 const ComponentTest = () => {
 
   const res = useSelector((prev) => prev.test.a)
-  const dispatch = useDispatch("setTest")
+  // const dispatch = useDispatch("setTest")
 
   return (
     <div>
