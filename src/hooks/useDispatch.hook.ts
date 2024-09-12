@@ -8,13 +8,13 @@ const useDispatch = <T, R extends keyof T, K>(
     {
         state,
         action
-    }: { state: R, action: (payload: K) => void }
+    }: { state: T[R], action: (payload: K) => void }
 ) => {
 
     const value = useContext(context)
 
     return (payload: ((store: T[R]) => K) | K) => {
-        const res = isFunction(payload) ? payload(value.store[state]) : payload
+        const res = isFunction(payload) ? payload(state) : payload
         action(res)
         value.observer.notify()
     }

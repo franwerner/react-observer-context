@@ -35,7 +35,7 @@ const createContextStore = <T extends { [K in keyof T]: Reducer<any, any> },>(re
         Provider: (props) => <Provider {...props} context={context} store={store} />,
         useDispatch: ({ state, action }) => {
             const currentAction = actions[state][action]
-            return useDispatch(context, { state, action: currentAction })
+            return useDispatch(context, { state : store[state], action: currentAction })
         },
         useSelector: <B,>(cb: ObserverCallback<Store, B>) => useSelector(context, cb),
         store: store

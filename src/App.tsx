@@ -1,11 +1,6 @@
 import createContextStore from "./helper/createContextStore.helper"
 import createReducer from "./helper/createReducer.helper"
 
-/**
-*Creo un symbol que se le va a 
-* 
- */
-
 
 const f = createReducer({
   actions: {
@@ -45,7 +40,7 @@ const ComponentTest = () => {
 
   return (
     <div>
-      <button onClick={() => dispatch((state) => state.testT + 1)}>Count${res}</button>
+      <button onClick={() => dispatch(1)}>Count${res}</button>
     </div>
   )
 }
