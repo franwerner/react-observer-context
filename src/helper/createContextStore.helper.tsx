@@ -3,6 +3,8 @@ import useSelector from "@react-observer-context/hooks/useSelector.hook";
 import { createContext, ReactNode } from "react";
 import Provider, { ContextStore } from "../context/Observer.context";
 import observerManager, { ObserverCallback } from "../utils/observer.utils";
+import { Reducer } from "./createReducer.helper";
+import createStore from "./createStore.helper";
 
 const createDynamicContext = <T,>(store: T) => {
     return createContext<ContextStore<T>>({
@@ -11,39 +13,37 @@ const createDynamicContext = <T,>(store: T) => {
     })
 }
 
-type ActionCallback<T, U> = (state: T, payload: U) => void
+type ParameterTypeAction<U, K extends keyof U, K2 extends keyof U[K]> = U[K][K2] extends (args: any) => void ? Parameters<U[K][K2]>[0] : never
 
-type Actions<T, U> = {
-    [K in keyof U]: ActionCallback<T, U[K]>
-}
 type ReturnTypeContextStore<T, U> = {
     Provider: (props: { children: ReactNode }) => JSX.Element;
-    useDispatch: <K extends keyof U>(actionKey: K) => (payload: U[K] | ((store: T) => U[K])) => void;
+    useDispatch: <K extends keyof U, K2 extends keyof U[K]>({ state, action }: { state: K, action: K2 }) =>
+        (payload: ParameterTypeAction<U, K, K2> | ((store: T[K extends keyof T ? K : never]) => ParameterTypeAction<U, K, K2>)) => void;
     useSelector: <B>(cb: ObserverCallback<T, B>) => B | undefined;
     store: T
 };
 
-interface ConfigStore<T, U> {
-    store: T,
-    actions: Actions<T, U>
-}
+const createContextStore = <T extends { [K in keyof T]: Reducer<any, any> },>(reducers: T) => {
+    const { actions, store } = createStore(reducers)
 
-const createContextStore = <T, U>(config: ConfigStore<T, U>) => {
-    const { actions, store } = config
+    type Store = typeof store
+    type Actions = typeof actions
+
     const context = createDynamicContext(store);
 
-    const res: ReturnTypeContextStore<T, U> = {
+    const res: ReturnTypeContextStore<Store, Actions> = {
         Provider: (props) => <Provider {...props} context={context} store={store} />,
-        useDispatch: (actionKey) => {
-            const currentAction = actions[actionKey]
-            return useDispatch(context, currentAction)
+        useDispatch: ({ state, action }) => {
+            const currentAction = actions[state][action]
+            return useDispatch(context, { state, action: currentAction })
         },
-        useSelector: <B,>(cb: ObserverCallback<T, B>) => useSelector(context, cb),
+        useSelector: <B,>(cb: ObserverCallback<Store, B>) => useSelector(context, cb),
         store: store
     };
+
     return res
 };
 
-export type { ActionCallback, Actions };
+
 export default createContextStore
 
