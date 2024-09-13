@@ -1,22 +1,16 @@
 import { ContextStore } from "@react-observer-context/context/Observer.context";
 import { Context, useContext } from "react";
 
-const isFunction = (input: any): input is Function => typeof input === "function"
-
-const useDispatch = <T, R extends keyof T, K>(
+const useDispatch = <T, U>(
     context: Context<ContextStore<T>>,
-    {
-        state,
-        action
-    }: { state: T[R], action: (payload: K) => void }
+    actions: U
 ) => {
 
-    const value = useContext(context)
+    const {observer,store} = useContext(context)
 
-    return (payload: ((store: T[R]) => K) | K) => {
-        const res = isFunction(payload) ? payload(state) : payload
-        action(res)
-        value.observer.notify()
+    return (dispatch: ((actions: U, store: T) => void)) => {
+        dispatch(actions,store)
+        observer?.notify()
     }
 
 };

@@ -20,7 +20,6 @@ interface Reducer<T, U> {
 }
 
 const createReducer = <T extends object, U>(config: ReducerInput<T, U>): Reducer<T, U> => {
-
     const actionsWithState: Actions<U> = {} as Actions<U>
     for (const key in config.actions) {
         actionsWithState[key] = ((payload) => {
@@ -34,5 +33,5 @@ const createReducer = <T extends object, U>(config: ReducerInput<T, U>): Reducer
     }
 }
 
-export type { Reducer }
+export type { Reducer,Actions}
 export default createReducer
