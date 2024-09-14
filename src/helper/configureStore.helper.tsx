@@ -26,25 +26,21 @@ type ReturnTypeContextStore<T, U> = {
 const configureStore = <T extends { [K in keyof T]: Reducer<any, any> },>(
     reducers: T,
     _context?: React.Context<ContextStore<OnlyState<T>>>,
-    instances: { count: number } = { count: 0 },
-    deep: number = 0
 ) => {
     const { actions, store } = createStore(reducers)
-    const context = _context || createDynamicContext(store);
+
+    let context = _context || createDynamicContext(store);
     const res: ReturnTypeContextStore<OnlyState<T>, OnlyActions<T>> = {
-        Observer: (props) => <Observer {...props} deep={deep} instances={instances} context={context} store={store} />,
+        Observer: (props) => <Observer {...props} context={context} store={store} />,
         useDispatch: () => useDispatch(context, actions),
         useSelector: <B,>(cb: ObserverCallback<OnlyState<T>, B>) => useSelector(context, cb),
-        extendStore: <Ex extends { [K in keyof Ex]: Reducer<any, any> }>(extend_reducers: (reducers: T) => Ex) => {
+        extendStore: <Ex extends { [K in keyof Ex  ]: Reducer<any, any> }>(extend_reducers:Ex) => { 
             /**
              * Se extienda con la misma referencia de los reducers anteriores.
              */
-            const res = extend_reducers(reducers)
-              
-            const combiend = res
+            const combiend = {...extend_reducers,...reducers}
             const combiendContext = context as React.Context<ContextStore<OnlyState<T & Ex>>>
-            instances.count++;
-            return configureStore(combiend, combiendContext, instances, deep + 1)
+            return configureStore(combiend, combiendContext)
         },
         store: store
     };

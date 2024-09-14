@@ -5,20 +5,20 @@ interface ObserverManager<T> {
     subscribe: (cb: (store: T) => void) => void
     unsubscribe: (cb: (store: T) => void) => void
     notify: () => void,
-    listeners: Listeners
+    listeners: Set<ObserverCallback>
 }
 
-const observerManager = <T,>(listeners: Listeners, store: T): ObserverManager<T> => ({
-    subscribe: (cb) => {
-        listeners.add(cb)
+const observerManager = <T,>(store: T): ObserverManager<T> => ({
+    listeners : new Set(),
+    subscribe: function(cb) {
+        this.listeners.add(cb)
     },
-    unsubscribe: (cb) => {
-        listeners.delete(cb)
+    unsubscribe: function(cb){
+        this.listeners.delete(cb)
     },
-    notify: () => {
-        listeners.forEach(cb => cb(store))
+    notify:function() {
+        this.listeners.forEach(cb => cb(store))
     },
-    listeners: listeners
 })
 
 export type { Listeners, ObserverManager, ObserverCallback }

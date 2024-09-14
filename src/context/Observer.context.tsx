@@ -1,5 +1,5 @@
-import { Context, ReactNode, useMemo, useRef } from "react";
-import observerManager, { Listeners, ObserverManager } from "../utils/observer.utils";
+import { Context, ReactNode, useRef } from "react";
+import observerManager, { ObserverManager } from "../utils/observer.utils";
 
 type ContextStore<T> = { observer: null | ObserverManager<T> } & { store: T }
 
@@ -8,30 +8,21 @@ interface ObserverProps<T> {
     children: ReactNode
     store: T
     context: Context<ContextStore<T>>
-    instances: {count : number}
-    deep: number
 }
 
-const Observer = <T,>({ children, context, store, deep, instances }: ObserverProps<T>) => {
+const Observer = <T,>({ children, context, store, }: ObserverProps<T>) => {
 
-    if(deep < instances.count) return children
-
-    const ref = useRef<{ store: T, listeners: Listeners }>({
+    const ref = useRef<{store : T,observer : ObserverManager<T>}>({
         store: store,
-        listeners: new Set()
+        observer: observerManager(store)
     })
 
-    const providerValue = useMemo(() => ({
-        store: ref.current.store,
-        observer: observerManager(ref.current.listeners, ref.current.store)
-    }), [])
-
     return (
-        <context.Provider value={providerValue}>
+        <context.Provider value={ref.current}>
             {children}
         </context.Provider>
     );
 };
 
-export type { ContextStore }
+export type { ContextStore };
 export default Observer
