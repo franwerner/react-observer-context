@@ -3,13 +3,18 @@ import observerManager, { Listeners, ObserverManager } from "../utils/observer.u
 
 type ContextStore<T> = { observer: null | ObserverManager<T> } & { store: T }
 
+
 interface ObserverProps<T> {
     children: ReactNode
     store: T
     context: Context<ContextStore<T>>
+    instances: {count : number}
+    deep: number
 }
 
-const Observer = <T,>({ children, context, store }: ObserverProps<T>) => {
+const Observer = <T,>({ children, context, store, deep, instances }: ObserverProps<T>) => {
+
+    if(deep < instances.count) return children
 
     const ref = useRef<{ store: T, listeners: Listeners }>({
         store: store,

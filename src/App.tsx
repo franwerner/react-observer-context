@@ -35,17 +35,15 @@ const extendTest = createReducer({
   }
 })
 
-const { extendStore, Provider, useSelector: Se } = configureStore({
+const { extendStore, Observer, useSelector: Se } = configureStore({
   g,
   f
 })
 
 
-const { store: F, useDispatch, useSelector, Provider: Prov } = extendStore({
-  extendTest
+const { store: F, useDispatch, useSelector, Observer: Prov } = extendStore((f) => {
+f
 })
-
-
 
 const ComponentTest = () => {
 
@@ -72,7 +70,9 @@ function App() {
     <>
       <Prov>
         <ComponentTest />
+        <Observer>
           <ProviderDeep />
+        </Observer>
       </Prov>
     </>
   )

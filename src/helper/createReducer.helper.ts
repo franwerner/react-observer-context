@@ -27,10 +27,10 @@ const createReducer = <T extends object, U>(config: ReducerInput<T, U>): Reducer
             action(config.state, payload);
         })
     }
-    return {
+    return Object.freeze({
         state: config.state,
         actions: actionsWithState
-    }
+    })
 }
 
 export type { Reducer,Actions}
