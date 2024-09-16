@@ -6,4 +6,5 @@
       }
     },
     "include": ["../lib","../src"],
+    "exclude" : ["../src/app"]
   }

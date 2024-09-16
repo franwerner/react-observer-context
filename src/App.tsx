@@ -5,11 +5,11 @@ import createReducer from "./helper/createReducer.helper"
 const f = createReducer({
   actions: {
     setR: (state, payload: string) => {
-      state.test.push()
+      state.test.push(payload)
     }
   },
   state: {
-    test: []
+    test: ["f"]
   }
 })
 
