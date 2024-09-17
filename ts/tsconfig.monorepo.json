@@ -1,9 +1,0 @@
-{
-  "extends" : "./tsconfig.base.json",
-    "compilerOptions": {
-      "paths": {
-        "@react-observer-context/*": ["../src/*"],
-      }
-    },
-    "include": ["../src"],
-  }

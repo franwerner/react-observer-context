@@ -1,4 +1,4 @@
-export * from "../src/helper/configureStore.helper"
-export {default as configureStore } from "../src/helper/configureStore.helper"
-export * from "../src/helper/createReducer.helper"
-export {default as createReducer } from "../src/helper/createReducer.helper"
+export * from "@/helper/configureStore.helper"
+export {default as configureStore } from "@/helper/configureStore.helper"
+export * from "@/helper/createReducer.helper"
+export {default as createReducer } from "@/helper/createReducer.helper"

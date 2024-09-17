@@ -1,4 +1,4 @@
-import { ContextStore } from "@react-observer-context/context/Observer.context";
+import { ContextStore } from "@/context/Observer.context";
 import { Context, useContext } from "react";
 
 const useDispatch = <T, U>(

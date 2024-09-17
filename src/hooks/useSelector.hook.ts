@@ -1,5 +1,5 @@
-import { ContextStore } from "@react-observer-context/context/Observer.context";
-import { ObserverCallback } from "@react-observer-context/utils/observer.utils";
+import { ContextStore } from "@/context/Observer.context";
+import { ObserverCallback } from "@/utils/observer.utils";
 import { Context, useContext, useEffect, useState } from "react";
 
 

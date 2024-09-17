@@ -39,7 +39,7 @@ const extendTest = createReducer({
 
 const {Observer,useSelector,extendStore,useDispatch} = configureStore({g,f})
 
-extendStore({extendTest})
+const {useDispatch:useDispatcht} = extendStore({extendTest})
 
 const ProviderDeep = () => {
   const res = useSelector((prev) => prev.g.testT)
@@ -52,6 +52,9 @@ const ProviderDeep = () => {
 
 function App() {
 
+  const T = useDispatcht()
+
+  T((actions) => actions.extendTest.setEx(1) )
   return (
     <>
         <Observer>
