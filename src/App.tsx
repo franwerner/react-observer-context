@@ -24,42 +24,26 @@ const g = createReducer({
   }
 })
 
-const extendTest = createReducer({
-  actions: {
-    setEx: (state, payload: number) => {
-      state.testExtend = payload
-    }
-  },
-  state: {
-    testExtend: 0
-  }
-})
 
-
-
-const {Observer,useSelector,extendStore,useDispatch} = configureStore({g,f})
-
-const {useDispatch:useDispatcht} = extendStore({extendTest})
+const { Observer, useSelector, useDispatch } = configureStore({ g, f })
 
 const ProviderDeep = () => {
   const res = useSelector((prev) => prev.g.testT)
   const dispatch = useDispatch()
 
   return (
-    <p onClick={() => dispatch((actions,store) => actions.g.setRR(store.g.testT + 1) )}>{res}</p>
+    <p onClick={() => dispatch((actions, store) => actions.g.setRR(store.g.testT + 1))}>{res}</p>
   )
 }
 
 function App() {
 
-  const T = useDispatcht()
 
-  T((actions) => actions.extendTest.setEx(1) )
   return (
     <>
-        <Observer>
-          <ProviderDeep />
-        </Observer>
+      <Observer>
+        <ProviderDeep />
+      </Observer>
     </>
 
 

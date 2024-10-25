@@ -5,7 +5,6 @@ const useDispatch = <T, U>(
     context: Context<ContextStore<T>>,
     actions: U
 ) => {
-
     const {observer,store} = useContext(context)
 
     return (dispatch: ((actions: U, store: T) => void)) => {

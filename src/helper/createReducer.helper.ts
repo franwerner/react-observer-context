@@ -17,7 +17,6 @@ type Actions<U> = {
 interface Reducer<T, U> {
     state: T,
     actions: Actions<U>
-    reducer ?: boolean
 }
 
 const createReducer = <T extends object, U>(config: ReducerInput<T, U>): Reducer<T, U> => {
@@ -31,7 +30,6 @@ const createReducer = <T extends object, U>(config: ReducerInput<T, U>): Reducer
     return {
         state: config.state,
         actions: actionsWithState,
-        reducer : true
     }
 }
 
