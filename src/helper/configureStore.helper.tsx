@@ -1,7 +1,7 @@
 import useDispatch from "@/hooks/useDispatch.hook";
 import useSelector from "@/hooks/useSelector.hook";
 import { createContext, ReactNode } from "react";
-import Observer, { ContextStore } from "../context/Observer.context";
+import ObserverStore, { ContextStore } from "../context/ObserverStore.context";
 import { ObserverCallback } from "../utils/observer.utils";
 import { Reducer } from "./createReducer.helper";
 import createStore, { OnlyActions, OnlyState } from "./createStore.helper";
@@ -14,7 +14,7 @@ const createDynamicContext = <T,>(store: T) => {
 }
 
 type ReturnTypeContextStore<T, U> = {
-    Observer: (props: { children: ReactNode }) => JSX.Element;
+    ObserverStore: (props: { children: ReactNode }) => JSX.Element;
     useDispatch: () => ((dispacher: (actions: U, store: T) => void) => void)
     useSelector: <B>(cb: ObserverCallback<T, B>) => B | undefined;
     store: T
@@ -27,7 +27,7 @@ const configureStore = <T extends { [K in keyof T]: Reducer<any, any> },>(
 
     let context = createDynamicContext(store);
     const res: ReturnTypeContextStore<OnlyState<T>, OnlyActions<T>> = {
-        Observer: (props) => <Observer {...props} context={context} store={store} />,
+        ObserverStore: (props) => <ObserverStore {...props} context={context} store={store} />,
         useDispatch: () => useDispatch(context, actions),
         useSelector: <B,>(cb: ObserverCallback<OnlyState<T>, B>) => useSelector(context, cb),
         store: store

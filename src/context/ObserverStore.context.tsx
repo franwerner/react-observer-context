@@ -4,15 +4,15 @@ import observerManager, { ObserverManager } from "../utils/observer.utils";
 type ContextStore<T> = { observer: null | ObserverManager<T> } & { store: T }
 
 
-interface ObserverProps<T> {
+interface ObserverStoreProps<T> {
     children: ReactNode
     store: T
     context: Context<ContextStore<T>>
 }
 
-const Observer = <T,>({ children, context, store, }: ObserverProps<T>) => {
+const ObserverStore = <T,>({ children, context, store, }: ObserverStoreProps<T>) => {
 
-    const ref = useRef<{store : T,observer : ObserverManager<T>}>({
+    const ref = useRef<{ store: T, observer: ObserverManager<T> }>({
         store: store,
         observer: observerManager(store)
     })
@@ -25,4 +25,4 @@ const Observer = <T,>({ children, context, store, }: ObserverProps<T>) => {
 };
 
 export type { ContextStore };
-export default Observer
+export default ObserverStore
