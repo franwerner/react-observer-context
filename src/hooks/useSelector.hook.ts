@@ -16,7 +16,7 @@ const useSelector = <T, ReturnCallback>(context: Context<ContextStore<T>>, selec
             if (res && res !== notify) {
                 setNotify(res)
             } else if (!res) {
-                setNotify(undefined)
+                setNotify(res)
             }
         }
         observer?.subscribe(listener)
