@@ -13,9 +13,8 @@ const useSelector = <T, ReturnCallback>(context: Context<ContextStore<T>>, selec
         if (!selector) return
         const listener = (store: T) => {
             const res = selector(store)
-            if (res && res !== notify) {
-                setNotify(res)
-            } else if (!res) {
+
+            if (!Object.is(res, notify)) {
                 setNotify(res)
             }
         }

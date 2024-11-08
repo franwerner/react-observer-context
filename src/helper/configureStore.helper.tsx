@@ -24,8 +24,8 @@ const configureStore = <T extends { [K in keyof T]: Reducer<any, any> },>(
     reducers: T,
 ) => {
     const { actions, store } = createStore(reducers)
-
     let context = createDynamicContext(store);
+
     const res: ReturnTypeContextStore<OnlyState<T>, OnlyActions<T>> = {
         ObserverStore: (props) => <ObserverStore {...props} context={context} store={store} />,
         useDispatch: () => useDispatch(context, actions),
