@@ -10,7 +10,7 @@ interface ReducerInput<T extends object, U> {
 }
 
 type Actions<U> = {
-    [K in keyof U]: (payload: U[K]) => void
+    [K in keyof U]: U[K] extends undefined ? (payload?: U[K]) => void : (payload: U[K]) => void;
 }
 
 interface Reducer<T, U> {
@@ -22,7 +22,7 @@ function createReducer<T extends object, U = any>(config: ReducerInput<T, U>): R
     const actionsWithState: Actions<U> = {} as Actions<U>
     const storeClone = {...config.state}
     for (const key in config.actions) {
-        actionsWithState[key] = ((payload) => {
+        actionsWithState[key] = ((payload:any) => {
             const action = config.actions[key]
             action(storeClone, payload);
         })

@@ -1,7 +1,7 @@
 import { configureStore, createReducer } from "../lib"
 
 
-const r = createReducer<{test : number},{setTest : number}>({
+const r = createReducer<{test ?: number},{setTest : number}>({
    state : {
      test : 1
    },
@@ -26,11 +26,9 @@ const Ts = () => {
   const dipatch = useDispatch()
 
 
-  console.log(t)
   return (
     <>
-      <button onClick={() =>dipatch((actions,store) => actions.r.setTest(store.r.test + 1)) }>asdasdasds</button>
-      <button onClick={() =>dipatch((actions) => actions.r.setTest(NaN)) }>123</button>
+      <button onClick={() =>dipatch(({r}) => r.setTest(1)) }>asdasdasds</button>
     </>
   )
 }
