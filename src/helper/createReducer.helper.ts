@@ -20,14 +20,15 @@ interface Reducer<T, U> {
 
 function createReducer<T extends object, U = any>(config: ReducerInput<T, U>): Reducer<T, U> {
     const actionsWithState: Actions<U> = {} as Actions<U>
+    const storeClone = {...config.state}
     for (const key in config.actions) {
         actionsWithState[key] = ((payload) => {
             const action = config.actions[key]
-            action(config.state, payload);
+            action(storeClone, payload);
         })
     }
     return {
-        state: config.state,
+        state: storeClone,
         actions: actionsWithState
     }
 }

@@ -9,7 +9,7 @@ import createStore, { OnlyActions, OnlyState } from "./createStore.helper";
 const createDynamicContext = <T,>(store: T) => {
     return createContext<ContextStore<T>>({
         observer: null,
-        store: structuredClone(store)
+        store
     })
 }
 
