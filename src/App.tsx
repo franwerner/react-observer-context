@@ -1,15 +1,15 @@
-import { configureStore, createReducer } from "../lib"
+import configureStore from "./helper/configureStore.helper"
+import createReducer from "./helper/createReducer.helper"
 
-
-const r = createReducer<{test ?: number},{setTest : number}>({
-   state : {
-     test : 1
-   },
-   actions : {
-    setTest : (state,payload) => {
-       state.test = payload
+const r = createReducer<{ test?: number }, { setTest: number }>({
+  state: {
+    test: 1
+  },
+  actions: {
+    setTest: (state, payload) => {
+      state.test = payload
     }
-   }
+  }
 })
 
 
@@ -28,7 +28,7 @@ const Ts = () => {
 
   return (
     <>
-      <button onClick={() =>dipatch(({r}) => r.setTest(1)) }>asdasdasds</button>
+      <button onClick={() => dipatch(({ r }) => r.setTest(1))}>{t}</button>
     </>
   )
 }

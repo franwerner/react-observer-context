@@ -1,18 +1,14 @@
-import { ContextStore } from "@/context/ObserverStore.context";
-import { Context, useContext } from "react";
+import { useStoreContext } from "@/context/ObserverStore.context";
 
-const useDispatch = <T, U>(
-    context: Context<ContextStore<T>>,
-    actions: U
-) => {
-    const {observer,store} = useContext(context)
+const useDispatch = () => {
+    
+    const {observer,state,actions} = useStoreContext()
 
-    return (dispatch: ((actions: U, store: T) => void)) => {
-        dispatch(actions,store)
+    return (dispatch: ((actions:any, state:any) => void)) => {
+        dispatch(actions,state)
         observer?.notify()
     }
 
-};
-
+}
 
 export default useDispatch

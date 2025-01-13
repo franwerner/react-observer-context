@@ -1,18 +1,18 @@
-import { ContextStore } from "@/context/ObserverStore.context";
+import { useStoreContext } from "@/context/ObserverStore.context";
 import { ObserverCallback } from "@/utils/observer.utils";
-import { Context, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 
-const useSelector = <T, ReturnCallback>(context: Context<ContextStore<T>>, selector: ObserverCallback<T, ReturnCallback>) => {
+const useSelector = <T, ReturnCallback>(selector: ObserverCallback<T, ReturnCallback>) => {
 
-    const { observer, store } = useContext(context)
+    const { observer, state } = useStoreContext()
 
-    const [notify, setNotify] = useState<ReturnCallback | undefined>(() => selector(store))
+    const [notify, setNotify] = useState<ReturnCallback | undefined>(() => selector(state))
 
     useEffect(() => {
         if (!selector) return
-        const listener = (store: T) => {
-            const res = selector(store)
+        const listener = (state: T) => {
+            const res = selector(state)
 
             if (!Object.is(res, notify)) {
                 setNotify(res)

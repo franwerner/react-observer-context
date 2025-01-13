@@ -1,14 +1,14 @@
-type ObserverCallback<T = any, R = any> = (store: T) => R
+type ObserverCallback<T = any, R = any> = (state: T) => R
 type Listeners = Set<ObserverCallback>
 
 interface ObserverManager<T> {
-    subscribe: (cb: (store: T) => void) => void
-    unsubscribe: (cb: (store: T) => void) => void
+    subscribe: (cb: (state: T) => void) => void
+    unsubscribe: (cb: (state: T) => void) => void
     notify: () => void,
     listeners: Set<ObserverCallback>
 }
 
-const observerManager = <T,>(store: T): ObserverManager<T> => ({
+const observerManager = <T,>(state: T): ObserverManager<T> => ({
     listeners : new Set(),
     subscribe: function(cb) {
         this.listeners.add(cb)
@@ -17,7 +17,7 @@ const observerManager = <T,>(store: T): ObserverManager<T> => ({
         this.listeners.delete(cb)
     },
     notify:function() {
-        this.listeners.forEach(cb => cb(store))
+        this.listeners.forEach(cb => cb(state))
     },
 })
 

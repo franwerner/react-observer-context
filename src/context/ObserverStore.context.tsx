@@ -1,28 +1,41 @@
-import { Context, ReactNode, useRef } from "react";
+import { createContext, ReactNode, useContext, useRef } from "react";
 import observerManager, { ObserverManager } from "../utils/observer.utils";
 
-type ContextStore<T> = { observer: null | ObserverManager<T> } & { store: T }
-
-
-interface ObserverStoreProps<T> {
-    children: ReactNode
-    store: T
-    context: Context<ContextStore<T>>
+interface Store<T, K> {
+    observer: ObserverManager<T>
+    state: T
+    actions: K
 }
 
-const ObserverStore = <T,>({ children, context, store, }: ObserverStoreProps<T>) => {
+interface ObserverStoreProps<T, K> {
+    children: ReactNode
+    state: T
+    actions: K
+    observer: ObserverManager<T>
+}
 
-    const ref = useRef<{ store: T, observer: ObserverManager<T> }>({
-        store: store,
-        observer: observerManager(store)
+const StoreContext = createContext<Store<any, any>>({
+    observer: observerManager({}),
+    state: {},
+    actions: {}
+})
+
+const ObserverStore = <T, K>({ children, state, actions, observer }: ObserverStoreProps<T, K>) => {
+
+    const ref = useRef<Store<T, K>>({
+        state,
+        actions,
+        observer
     })
 
     return (
-        <context.Provider value={ref.current}>
+        <StoreContext.Provider value={ref.current}>
             {children}
-        </context.Provider>
+        </StoreContext.Provider>
     );
 };
 
-export type { ContextStore };
+const useStoreContext = () => useContext(StoreContext)
+
+export { useStoreContext };
 export default ObserverStore

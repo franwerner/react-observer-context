@@ -28,7 +28,7 @@ const createStore = <T extends { [K in keyof T]: Reducer<any, any> },>(reducers:
 
   }
   return {
-    store: stackStates,
+    state: stackStates,
     actions: stackActions
   }
 }
