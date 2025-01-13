@@ -2,7 +2,7 @@ type ObserverCallback<T = any, R = any> = (state: T) => R
 type Listeners = Set<ObserverCallback>
 
 interface ObserverManager<T> {
-    subscribe: (cb: (state: T) => void) => ObserverManager<T>["unsubscribe"]
+    subscribe: (cb: (state: T) => void) => Function
     unsubscribe: (cb: (state: T) => void) => void
     notify: () => void,
     listeners: Set<ObserverCallback>
