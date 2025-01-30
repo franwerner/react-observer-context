@@ -46,7 +46,8 @@ function createReducer<T extends object, U extends object>(config: ReducerInput<
         })
     }
 
-    const actionsWithReset = { ...actionsWithState, reset: () => ({ ...config.state }) }
+    const reset = () => ({ ...config.state })//config.state = valores iniciales
+    const actionsWithReset = { ...actionsWithState, reset }
 
     return {
         state,
@@ -55,5 +56,5 @@ function createReducer<T extends object, U extends object>(config: ReducerInput<
 }
 
 
-export type { Reducer, ReducerInput,TT, Actions, ActionsOutput }
+export type { Reducer, ReducerInput, Actions, ActionsOutput }
 export { createReducer } 
