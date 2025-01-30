@@ -32,7 +32,9 @@ function createReducer<T extends object, U = any>(config: ReducerInput<T, U>): R
             const nextPayload = isPrimitive ? payload : structuredClone(payload)
             const newState = action(state, nextPayload)
             if (newState === state || !newState) {
-                throw new Error(`Mal uso en la accion ${key}, Se esperaba una nueva referencia del estado. Asegúrate de que cada acción retorne un nuevo objeto de estado.`)
+                console.error(
+                    new Error(`Mal uso en la accion ${key}, Se esperaba una nueva referencia del estado. Asegúrate de que cada acción retorne un nuevo objeto de estado.`).stack
+                )
             }
             state = newState
             return newState
