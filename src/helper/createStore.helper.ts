@@ -1,9 +1,5 @@
-import { Reducer } from "./createReducer.helper";
+import { Actions, Reducer } from "./createReducer.helper";
 
-
-type ReducerList<T extends { [K in keyof T]: Reducer<any, any> },> = {
-  [K in keyof T]: T[K]
-};
 
 type OnlyActions<T extends { [K in keyof T]: Reducer<any, any> }> = {
   [K in keyof T]: T[K]['actions'];
@@ -13,19 +9,35 @@ type OnlyState<T extends { [K in keyof T]: Reducer<any, any> }> = {
   [K in keyof T]: T[K]["state"]
 }
 
-const createStore = <T extends { [K in keyof T]: Reducer<any, any> },>(reducers: ReducerList<T>) => {
+const extendActions = <T extends { [K in keyof T]: Reducer<any, any> }>(reducerKey: keyof T, actions: Actions<any, any>, stackStates: OnlyState<T>) => {
+  /**
+* Extendemos la funcionalidad de cada acción para actualize la referencia del estado global
+* con una nueva referencia devuelta por cada ejecución de la acción.
+* 
+* De esta manera, el estado interno de cada reducer no se muta directamente, en su lugar, cada acción
+* crea y devuelve un nuevo estado, promoviendo la inmutabilidad. Lo unico mutable sera el 
+* objeto global de la store, donde se almacenan las referencias actualizadas de cada estado después 
+* de ejecutar la acción correspondiente.
+*/
+  const internalActionsStack: Actions<any, any> = {}
+  for (const key in actions) {
+    internalActionsStack[key] = (payload: any) => {
+      const newState = actions[key](payload)
+      stackStates[reducerKey] = newState
+    }
+  }
+  return internalActionsStack
+}
 
+const createStore = <T extends { [K in keyof T]: Reducer<any, any> },>(reducers: T) => {
   let stackActions = {} as OnlyActions<T>
   let stackStates = {} as OnlyState<T>
   for (const key in reducers) {
     const reducer = reducers[key]
-    if (reducer) {
-      const state = reducer["state"]
-      const actions = reducer["actions"]
-      stackActions[key] = actions
-      stackStates[key] = state
-    }
-
+    const state = reducer["state"]
+    const actions = reducer["actions"]
+    stackActions[key] = extendActions(key, actions, stackStates)
+    stackStates[key] = state
   }
   return {
     state: stackStates,
@@ -33,5 +45,5 @@ const createStore = <T extends { [K in keyof T]: Reducer<any, any> },>(reducers:
   }
 }
 
-export type { ReducerList,OnlyActions,OnlyState }
+export type { OnlyActions, OnlyState }
 export default createStore

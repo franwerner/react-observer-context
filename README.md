@@ -1,54 +1,59 @@
-<<<<<<< HEAD
 # react-observer-context
-=======
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto proporciona una forma flexible y escalable de gestionar el estado global y los estados individuales de los reducers en una aplicación. Utiliza el patrón de reducers junto con la inmutabilidad para manejar las actualizaciones de estado de manera segura y eficiente.
 
-Currently, two official plugins are available:
+### `createReducer`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+El propósito de `createReducer` es manejar el estado y las acciones de un reducer específico de manera aislada. Cada acción debe retornar una **nueva referencia del estado** para garantizar la inmutabilidad. Esta capa es responsable de crear nuevas referencias del estado sin modificar el estado existente.
 
-## Expanding the ESLint configuration
+### `createStore`
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+`createStore` es el encargado de gestionar el estado global, manteniendo un objeto global donde se almacenan las referencias actualizadas de cada estado después de ejecutar las acciones correspondientes.
+Aca es donde se combinan los reducers y sus estados, y se extienden las funcionalidades de las acciones para que cada acción pueda actualizar el estado global sin mutar el estado de los reducers individuales.
 
-- Configure the top-level `parserOptions` property like this:
+### Flujo de datos
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
+1. **Cada reducer**: Maneja su propio estado y las acciones asociadas.
+2. **Al ejecutar una acción**: El reducer devuelve un nuevo estado, siguiendo el principio de inmutabilidad.
+3. **`createStore`**: Se encarga de almacenar el estado global y coordinar la ejecución de las acciones, actualizando las referencias devueltas por las acciones al estado global.
+
+## Ejemplo de un reducer.
+
+```typescript
+
+interface State {
+  count: number;
+}
+interface Actions {
+  incrementar: number;
+  decrementar: number;
+  restart: undefined; //Las acciones con undefined no requieren de un valor, simplmente ejecutan un logica.
+}
+
+const actions = {
+  incrementar: (state, payload) => {
+    return {
+      ...state,
+      payload: state.count + payload,
+    };
   },
+  decrementar: (state, payload) => {
+    return {
+      ...state,
+      payload: state.count + payload,
+    };
+  },
+  restart: (state) => {
+    return {
+      ...state,
+      count: 0,
+    };
+  },
+};
+
+const counterReducer = createReducer<State, Actions>({
+  state: { count: 0 },
+  actions: actions,
 })
+
 ```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
->>>>>>> master

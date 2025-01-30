@@ -24,7 +24,8 @@ const configureStore = <T extends { [K in keyof T]: Reducer<any, any> },>(
     const observer = observerManager(state)
 
     const res: ReturnTypeContextStore<OnlyState<T>, OnlyActions<T>> = {
-        ObserverStore: (props) => <ObserverStore {...props} actions={actions} state={state} observer={observer} />,
+        
+        ObserverStore: (props) => <ObserverStore  {...props} actions={actions} state={state} observer={observer} />,
         useDispatch,
         useSelector,
         store: {
