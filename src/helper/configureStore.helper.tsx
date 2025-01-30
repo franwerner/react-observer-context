@@ -17,7 +17,7 @@ type ReturnTypeContextStore<T, U> = {
     }>
 };
 
-const configureStore = <T extends { [K in keyof T]: Reducer<any, any> },>(
+const configureStore = <T extends { [K in keyof T]: Reducer },>(
     reducers: T,
 ) => {
     const { actions, state } = createStore(reducers)
@@ -38,5 +38,5 @@ const configureStore = <T extends { [K in keyof T]: Reducer<any, any> },>(
 };
 
 
-export default configureStore
+export  {configureStore}
 

@@ -27,7 +27,6 @@ interface State {
 interface Actions {
   incrementar: number;
   decrementar: number;
-  restart: undefined; //Las acciones con undefined no requieren de un valor, simplmente ejecutan una logica.
 }
 
 const actions = {

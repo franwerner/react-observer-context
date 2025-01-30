@@ -1,5 +1,6 @@
-import configureStore from "./helper/configureStore.helper"
-import createReducer from "./helper/createReducer.helper"
+import { configureStore } from "./helper/configureStore.helper"
+import { createReducer } from "./helper/createReducer.helper"
+
 
 const stateTo = {
   test: 1,
@@ -14,7 +15,7 @@ const r = createReducer({
         ...state,
         test: payload
       }
-    }
+    },
   }
 })
 
@@ -25,16 +26,18 @@ const { ObserverStore, useDispatch, useSelector } = configureStore({
 
 const Ts = () => {
 
-  useSelector((store) => store.r)
+  const state = useSelector((store) => store.r.test)
 
   const dipatch = useDispatch()
 
 
   return (
     <>
-      <button onClick={() => dipatch(({ r }, state) => {
-        r.setTest(state.r.test + 1)
-      })}>{1}</button>
+      <button onClick={() => dipatch((action, state) => {
+        action.r.setTest(state.r.test + 1)
+      })}>{state}</button>
+
+      <button onClick={() => dipatch(({ r }) => console.log(r.reset()))}>Reset</button>
     </>
   )
 }

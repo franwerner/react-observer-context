@@ -1,8 +1,8 @@
 
-type ActionCallbackInput<T, U> = (state: T, payload: U) => T
+type ActionCallback<T, U> = (state: T, payload: U) => T
 
 type ActionsInput<T, U> = {
-    [K in keyof U]: ActionCallbackInput<T, U[K]>
+    [K in keyof U]: ActionCallback<T, U[K]>
 }
 interface ReducerInput<T extends object, U> {
     state: T,
@@ -10,23 +10,28 @@ interface ReducerInput<T extends object, U> {
 }
 
 type Actions<T, U> = {
-    [K in keyof U]: U[K] extends undefined ? (payload?: U[K]) => T : (payload: U[K]) => T;
+    [K in keyof U]: (payload: U[K]) => T;
 }
 
-interface Reducer<T, U> {
+type ActionsOutput<T = any, U = any> = Actions<T, U> & { reset: () => T }
+
+
+interface Reducer<T = any, U = any> {
     state: T,
-    actions: Actions<T, U>,
+    actions: ActionsOutput<T, U>,
 }
 
-function createReducer<T extends object, U = any>(config: ReducerInput<T, U>): Reducer<T, U> {
+function createReducer<T extends object, U extends object>(config: ReducerInput<T, U>): Reducer<T, U> {
     const actionsWithState: Actions<T, U> = {} as Actions<T, U>
+
     let state = config.state
+
     for (const key in config.actions) {
         actionsWithState[key] = ((payload: any) => {
             const action = config.actions[key]
             /**
              * Se debe hacer una copia de cada payload, debido a que queremos limpiar cualquier efecto secundario con respecto a los valores de los estados.
-             * Con esto nos asegurado que cualquiero nuevo valor para el estado de store, solo sea parate de la store sin afectar modificaciones por referencia externas.
+             * Con esto nos asegurado que cualquiero nuevo valor para el estado de state, solo sea parate de la state, haciendo que cualquier modificacion externa no afecte al state.
              */
             const isPrimitive = typeof payload !== "object"
             const nextPayload = isPrimitive ? payload : structuredClone(payload)
@@ -40,12 +45,15 @@ function createReducer<T extends object, U = any>(config: ReducerInput<T, U>): R
             return newState
         })
     }
+
+    const actionsWithReset = { ...actionsWithState, reset: () => ({ ...config.state }) }
+
     return {
         state,
-        actions: actionsWithState,
+        actions: actionsWithReset,
     }
 }
 
 
-export type { Reducer, Actions, ReducerInput }
-export default createReducer
+export type { Reducer, ReducerInput,TT, Actions, ActionsOutput }
+export { createReducer } 

@@ -1,15 +1,15 @@
-import { Actions, Reducer } from "./createReducer.helper";
+import { ActionsOutput, Reducer } from "./createReducer.helper";
 
 
-type OnlyActions<T extends { [K in keyof T]: Reducer<any, any> }> = {
+type OnlyActions<T extends { [K in keyof T]: Reducer}> = {
   [K in keyof T]: T[K]['actions'];
 }
 
-type OnlyState<T extends { [K in keyof T]: Reducer<any, any> }> = {
+type OnlyState<T extends { [K in keyof T]: Reducer}> = {
   [K in keyof T]: T[K]["state"]
 }
 
-const extendActions = <T extends { [K in keyof T]: Reducer<any, any> }>(reducerKey: keyof T, actions: Actions<any, any>, stackStates: OnlyState<T>) => {
+const extendActions = <T extends { [K in keyof T]: Reducer}>(reducerKey: keyof T, actions: ActionsOutput, stackStates: OnlyState<T>) => {
   /**
 * Extendemos la funcionalidad de cada acción para actualize la referencia del estado global
 * con una nueva referencia devuelta por cada ejecución de la acción.
@@ -19,17 +19,17 @@ const extendActions = <T extends { [K in keyof T]: Reducer<any, any> }>(reducerK
 * objeto global de la store, donde se almacenan las referencias actualizadas de cada estado después 
 * de ejecutar la acción correspondiente.
 */
-  const internalActionsStack: Actions<any, any> = {}
+  const internalActionsStack = {} as ActionsOutput
   for (const key in actions) {
     internalActionsStack[key] = (payload: any) => {
       const newState = actions[key](payload)
-      stackStates[reducerKey] = newState
+        return stackStates[reducerKey] = newState
     }
   }
   return internalActionsStack
 }
 
-const createStore = <T extends { [K in keyof T]: Reducer<any, any> },>(reducers: T) => {
+const createStore = <T extends { [K in keyof T]: Reducer },>(reducers: T) => {
   let stackActions = {} as OnlyActions<T>
   let stackStates = {} as OnlyState<T>
   for (const key in reducers) {
