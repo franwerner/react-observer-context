@@ -7,7 +7,7 @@ const useSelector = <T, ReturnCallback>(selector: ObserverCallback<T, ReturnCall
 
     const { observer, state } = useStoreContext()
 
-    const [notify, setNotify] = useState<ReturnCallback | undefined>(() => selector(state))
+    const [notify, setNotify] = useState<ReturnCallback>(() => selector(state))
 
     useEffect(() => {
         if (!selector) return

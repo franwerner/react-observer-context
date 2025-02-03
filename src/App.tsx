@@ -24,15 +24,17 @@ const { ObserverStore, useDispatch, useSelector } = configureStore({
 
 const Ts = () => {
 
-  const state = useSelector((store) => store.r.test)
+  const state = useSelector((store) => store.r)
 
   const dipatch = useDispatch()
 
+  console.log(state)
+
   return (
     <>
-      <button onClick={() => dipatch((action, state) => {
-        action.r.setTest(state.r.test + 1)
-      })}>{state}</button>
+      <button onClick={() => dipatch((action,) => {
+        action.r.setTest(2)
+      })}>{1}</button>
 
       <button onClick={() => dipatch(({ r }) => r.reset())}>Reset</button>
     </>

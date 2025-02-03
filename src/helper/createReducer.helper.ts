@@ -2,7 +2,7 @@
 type ActionCallback<T, U> = (state: T, payload: U) => T
 
 type ActionsInput<T, U> = {
-    [K in keyof U]: ActionCallback<T, U[K]>
+    [K in keyof U]: K extends "reset" ? never : ActionCallback<T, U[K]>
 }
 interface ReducerInput<T extends object, U> {
     state: T,
@@ -10,7 +10,7 @@ interface ReducerInput<T extends object, U> {
 }
 
 type Actions<T, U> = {
-    [K in keyof U]: (payload: U[K]) => T;
+    [K in keyof U]: (payload: U[K]) => T
 }
 
 type ActionsOutput<T = any, U = any> = Actions<T, U> & { reset: () => T }
@@ -24,6 +24,10 @@ interface Reducer<T = any, U = any> {
 function createReducer<T extends object, U extends object>(config: ReducerInput<T, U>): Reducer<T, U> {
     const actionsWithState: Actions<T, U> = {} as Actions<T, U>
 
+    if ("reset" in config.actions) {
+        console.warn("La acción 'reset' no puede ser agregada manualmente, ya que ya existe una implementación por defecto.")
+    }
+    
     let state = config.state
 
     for (const key in config.actions) {

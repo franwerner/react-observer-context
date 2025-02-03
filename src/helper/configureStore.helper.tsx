@@ -10,7 +10,7 @@ import createStore, { OnlyActions, OnlyState } from "./createStore.helper";
 type ReturnTypeContextStore<T, U> = {
     ObserverStore: (props: { children: ReactNode }) => JSX.Element
     useDispatch: () => ((dispatch: (actions: U, store: T) => void) => void)
-    useSelector: <B>(cb: ObserverCallback<T, B>) => B | undefined
+    useSelector: <B>(cb: ObserverCallback<T, B>) => B 
     store: Readonly<{
         state: T,
         observer: ObserverManager<T>
